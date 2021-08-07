@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:slop_monitoring/Filemanagement.dart';
+import 'package:slop_monitoring/deleteFiles.dart';
 import 'package:slop_monitoring/newEntry.dart';
 import 'package:slop_monitoring/settings.dart';
 import 'graph.dart';
@@ -83,7 +84,6 @@ class _MainPage extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white70,
       appBar: AppBar(
         leading: Icon(Icons.home),
         title: const Text('Slop Monitoring Sytem'),
@@ -246,9 +246,13 @@ class _MainPage extends State<MainPage> {
                     },
                   ),
                 ),
-                Card(
-                  child: ListTile(
-                    title: CupertinoButton(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
                         color: Colors.cyan,
                         child: const Text('Explore discovered devices'),
                         onPressed: () async {
@@ -268,11 +272,10 @@ class _MainPage extends State<MainPage> {
                             print('Discovery -> no device selected');
                           }
                         }),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: CupertinoButton(
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
                       color: Colors.cyan,
                       child: const Text('Run Command'),
                       onPressed: () async {
@@ -295,11 +298,10 @@ class _MainPage extends State<MainPage> {
                         }
                       },
                     ),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: CupertinoButton(
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
                         color: Colors.cyan,
                         child: const Text('Show Graph'),
                         onPressed: () async {
@@ -321,11 +323,10 @@ class _MainPage extends State<MainPage> {
                             print('Connect -> no device selected');
                           }
                         }),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: CupertinoButton(
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
                         color: Colors.cyan,
                         child: const Text('New Entry'),
                         onPressed: () async {
@@ -347,13 +348,12 @@ class _MainPage extends State<MainPage> {
                             print('Connect -> no device selected');
                           }
                         }),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: CupertinoButton(
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
                         color: Colors.cyan,
-                        child: const Text('File Management'),
+                        child: const Text('Download Files'),
                         onPressed: () async {
                           final BluetoothDevice selectedDevice =
                               await Navigator.of(context).push(
@@ -364,7 +364,6 @@ class _MainPage extends State<MainPage> {
                               },
                             ),
                           );
-
                           if (selectedDevice != null) {
                             print('Connect -> selected ' +
                                 selectedDevice.address);
@@ -373,11 +372,34 @@ class _MainPage extends State<MainPage> {
                             print('Connect -> no device selected');
                           }
                         }),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: CupertinoButton(
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
+                        color: Colors.cyan,
+                        child: const Text('Delete Files'),
+                        onPressed: () async {
+                          final BluetoothDevice selectedDevice =
+                              await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SelectBondedDevicePage(
+                                    checkAvailability: false);
+                              },
+                            ),
+                          );
+                          if (selectedDevice != null) {
+                            print('Connect -> selected ' +
+                                selectedDevice.address);
+                            _deleteFiles(context, selectedDevice);
+                          } else {
+                            print('Connect -> no device selected');
+                          }
+                        }),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
                         color: Colors.cyan,
                         child: const Text('Settings'),
                         onPressed: () async {
@@ -399,8 +421,8 @@ class _MainPage extends State<MainPage> {
                             print('Connect -> no device selected');
                           }
                         }),
-                  ),
-                ),
+                  ],
+                )
               ],
             ),
           ),
@@ -435,6 +457,16 @@ class _MainPage extends State<MainPage> {
       MaterialPageRoute(
         builder: (context) {
           return FileManagement(server: server);
+        },
+      ),
+    );
+  }
+
+  void _deleteFiles(BuildContext context, BluetoothDevice server) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return DeleteFiles(server: server);
         },
       ),
     );

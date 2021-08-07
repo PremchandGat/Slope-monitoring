@@ -5,23 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'dart:async';
-import 'package:permission_handler/permission_handler.dart';
 
 List files = [];
 bool save = false;
 var fileData = "newFile";
 
-class FileManagement extends StatefulWidget {
+class DeleteFiles extends StatefulWidget {
   final BluetoothDevice server;
-  const FileManagement({this.server});
+  const DeleteFiles({this.server});
   @override
-  _FileManagement createState() => new _FileManagement();
+  _DeleteFiles createState() => new _DeleteFiles();
 }
 
-class _FileManagement extends State<FileManagement> {
+class _DeleteFiles extends State<DeleteFiles> {
   BluetoothConnection connection;
   var filename;
   String _messageBuffer = '';
@@ -71,7 +67,7 @@ class _FileManagement extends State<FileManagement> {
                 files = [];
               });
               isConnected
-                  ? _sendMessage("f")
+                  ? _sendMessage("g")
                   : EasyLoading.showError("Device not connected");
             })
       ];
@@ -81,7 +77,7 @@ class _FileManagement extends State<FileManagement> {
           ListTile(
             title: Text(i),
             trailing: IconButton(
-              icon: Icon(Icons.download),
+              icon: Icon(Icons.delete_forever),
               onPressed: () async {
                 if (isConnected) {
                   var x = i.split(".TXT");
@@ -89,6 +85,10 @@ class _FileManagement extends State<FileManagement> {
                   filename = x[0];
                   fileData = x[0];
                   _sendMessage(x[0]);
+                  await Future.delayed(Duration(seconds: 2));
+                  setState(() {
+                    files = [];
+                  });
                 } else {
                   EasyLoading.showError("Device not connected");
                 }
@@ -204,8 +204,7 @@ class _FileManagement extends State<FileManagement> {
           setState(() {
             files = [];
           });
-          _sendMessage("f");
-          saveVideo(fileData, filename);
+          _sendMessage("g");
           EasyLoading.dismiss();
         }
 
@@ -231,70 +230,4 @@ class _FileManagement extends State<FileManagement> {
       }
     }
   }
-}
-
-Future<bool> saveVideo(data, name) async {
-  Directory directory;
-  try {
-    if (Platform.isAndroid) {
-      if (await _requestPermission(Permission
-          .mediaLibrary)) if (await _requestPermission(Permission.storage)) {
-        directory = await getExternalStorageDirectory();
-        String newPath = "";
-        print(directory);
-        List<String> paths = directory.path.split("/");
-        for (int x = 1; x < paths.length; x++) {
-          String folder = paths[x];
-          if (folder != "Android") {
-            newPath += "/" + folder;
-          } else {
-            break;
-          }
-        }
-        newPath = newPath + "/SlopeMonitoringSystem";
-        directory = Directory(newPath);
-      } else {
-        return false;
-      }
-      print("4");
-    } else {
-      print("5");
-      if (await _requestPermission(Permission.photos)) {
-        print("6");
-        directory = await getTemporaryDirectory();
-        print("7");
-      } else {
-        return false;
-      }
-    }
-    File saveFile = File(directory.path + "/$name.txt");
-    if (!await directory.exists()) {
-      print(directory.toString());
-      await directory.create(recursive: true);
-    }
-    if (await directory.exists()) {
-      print(saveFile.toString());
-      await saveFile.writeAsString(data, mode: FileMode.writeOnlyAppend);
-      return true;
-    }
-    return false;
-  } catch (e) {
-    print(e.toString());
-    EasyLoading.showError(e.toString());
-    EasyLoading.showError(
-        "Your Phone is not allowing to create new files/folders. Please contact premchandg278@gmail.com");
-    return false;
-  }
-}
-
-Future<bool> _requestPermission(Permission permission) async {
-  if (await permission.isGranted) {
-    return true;
-  } else {
-    var result = await permission.request();
-    if (result == PermissionStatus.granted) {
-      return true;
-    }
-  }
-  return false;
 }

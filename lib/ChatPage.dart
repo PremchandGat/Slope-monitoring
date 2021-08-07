@@ -230,7 +230,6 @@ class _ChatPage extends State<ChatPage> {
               curve: Curves.easeOut);
         });
       } catch (e) {
-        // Ignore error, but notify state
         setState(() {});
       }
     }

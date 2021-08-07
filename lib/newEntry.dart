@@ -1,15 +1,11 @@
 import 'dart:convert';
-
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'dart:async';
-import 'package:permission_handler/permission_handler.dart';
 
 class _Message {
   int whom;
@@ -19,9 +15,7 @@ class _Message {
 
 class NewEntry extends StatefulWidget {
   final BluetoothDevice server;
-
   const NewEntry({this.server});
-
   @override
   _NewEntry createState() => new _NewEntry();
 }
@@ -90,6 +84,11 @@ class _NewEntry extends State<NewEntry> {
 
   @override
   Widget build(BuildContext context) {
+    messages.map((_message) {
+      var str = _message.text.toString().trim();
+      print(str);
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
           title: (isConnecting
