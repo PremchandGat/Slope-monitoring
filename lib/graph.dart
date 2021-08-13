@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:async';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class _Message {
   int whom;
@@ -13,9 +13,9 @@ class _Message {
   _Message(this.whom, this.text);
 }
 
-double inputText;
-List displacement = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
-List time = ["a", "b", "4.0", "6.0", "8.0", "10.0"];
+double inputText = 10.0;
+List displacement = [];
+List time = [];
 var warning = 0.0;
 var data;
 var storedata = false;
@@ -43,21 +43,19 @@ class _GraphPage extends State<GraphPage> {
   static final clientID = 0;
   BluetoothConnection connection;
   var filename;
-  List<_Message> messages = List<_Message>();
+  List<_Message> messages = [];
   String _messageBuffer = '';
-
   final TextEditingController textEditingController =
       new TextEditingController();
-
   bool isConnecting = true;
   bool get isConnected => connection != null && connection.isConnected;
-
   bool isDisconnecting = false;
 
   @override
   void initState() {
     super.initState();
-    //  startGraph();
+    displacement = [];
+    time = [];
     BluetoothConnection.toAddress(widget.server.address).then((_connection) {
       print('Connected to the device');
       connection = _connection;
@@ -65,7 +63,6 @@ class _GraphPage extends State<GraphPage> {
         isConnecting = false;
         isDisconnecting = false;
       });
-
       connection.input.listen(_onDataReceived).onDone(() {
         if (isDisconnecting) {
           print('Disconnecting locally!');
@@ -95,39 +92,6 @@ class _GraphPage extends State<GraphPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Row> list = messages.map((_message) {
-      var str = _message.text.trim();
-      print(str.length);
-      if (str.length < 25 || str.length > 29) {
-      } else {
-        if (save != true) {
-          var arr = str.split(',');
-          print(arr);
-          setState(() {
-            for (int i = displacement.length - 1; i >= 0; i--) {
-              if (i == 0) {
-                displacement[0] = double.parse(arr[0]);
-              } else {
-                displacement[i] = displacement[i - 1];
-              }
-            }
-            date = "${arr[1]}/${arr[2]}/${arr[3]}";
-            for (int i = time.length - 1; i >= 0; i--) {
-              if (i == 0) {
-                time[0] = "${arr[4]}:${arr[5]}:${arr[6]}";
-              } else {
-                time[i] = time[i - 1];
-              }
-            }
-            print("displacemetn" + displacement.toString());
-            print("time" + time.toString());
-            warning = double.parse(arr[7]);
-            alarm = double.parse(arr[8]);
-          });
-        }
-      }
-    }).toList();
-
     return Scaffold(
       appBar: AppBar(
           title: (isConnecting
@@ -167,6 +131,9 @@ class _GraphPage extends State<GraphPage> {
                     color: warning == 1.0 ? Colors.red : Colors.black38,
                     borderRadius: BorderRadius.all(Radius.circular(30))),
                 child: SfCartesianChart(
+                  zoomPanBehavior: ZoomPanBehavior(
+                      // Enables pinch zooming
+                      enablePinching: true),
                   primaryXAxis: CategoryAxis(),
                   title: ChartTitle(text: 'x: Displacement    y: Time'),
                   tooltipBehavior: TooltipBehavior(enable: true),
@@ -189,17 +156,13 @@ class _GraphPage extends State<GraphPage> {
               height: 50,
             ),
             Slider(
-                min: 0,
+                min: 10,
                 max: 100,
                 value: inputText == null ? 5 : inputText,
                 onChanged: (val) {
                   print(val);
                   setState(() {
                     inputText = val.floorToDouble();
-                    displacement = [
-                      for (double i = 0; i <= inputText; i++) null
-                    ];
-                    time = [for (double i = 0; i <= inputText; i++) null];
                   });
                 }),
             Container(height: 10),
@@ -252,6 +215,58 @@ class _GraphPage extends State<GraphPage> {
     String dataString = String.fromCharCodes(buffer);
     int index = buffer.indexOf(13);
     if (~index != 0) {
+      var str = (backspacesCounter > 0
+              ? _messageBuffer.substring(
+                  0, _messageBuffer.length - backspacesCounter)
+              : _messageBuffer + dataString.substring(0, index))
+          .trim();
+      print(str.length);
+      if (str.length < 25 || str.length > 29) {
+      } else {
+        if (save != true) {
+          var arr = str.split(',');
+          print(arr);
+          setState(() {
+            date = "${arr[1]}/${arr[2]}/${arr[3]}";
+            print("cccccccccccccc" + inputText.toString());
+            if (inputText > time.length) {
+              displacement = List.from(displacement.reversed);
+              displacement.add(double.parse(arr[0]));
+              displacement = List.from(displacement.reversed);
+              time = List.from(time.reversed);
+              time.add("${arr[4]}:${arr[5]}:${arr[6]}");
+              time = List.from(time.reversed);
+            } else if (inputText < time.length &&
+                inputText < displacement.length) {
+              time = List.from(time.reversed)
+                  .sublist(time.length - inputText.toInt());
+              time = List.from(time.reversed);
+              displacement = List.from(displacement.reversed)
+                  .sublist(displacement.length - inputText.toInt());
+              displacement = List.from(displacement.reversed);
+            } else {
+              for (int i = displacement.length - 1; i >= 0; i--) {
+                if (i == 0) {
+                  displacement[0] = double.parse(arr[0]);
+                } else {
+                  displacement[i] = displacement[i - 1];
+                }
+              }
+              for (int i = time.length - 1; i >= 0; i--) {
+                if (i == 0) {
+                  time[0] = "${arr[4]}:${arr[5]}:${arr[6]}";
+                } else {
+                  time[i] = time[i - 1];
+                }
+              }
+            }
+            print("displacemetn" + displacement.toString());
+            print("time" + time.toString());
+            warning = double.parse(arr[7]);
+            alarm = double.parse(arr[8]);
+          });
+        }
+      }
       setState(() {
         messages.add(
           _Message(
@@ -277,7 +292,7 @@ class _GraphPage extends State<GraphPage> {
     textEditingController.clear();
     if (text.length > 0) {
       try {
-        connection.output.add(utf8.encode(text + "\r\n"));
+        connection.output.add(utf8.encode(text));
         await connection.output.allSent;
 
         setState(() {

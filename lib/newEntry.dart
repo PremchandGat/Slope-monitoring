@@ -32,7 +32,7 @@ class _NewEntry extends State<NewEntry> {
   static final clientID = 0;
   BluetoothConnection connection;
   var filename;
-  List<_Message> messages = List<_Message>();
+  List<_Message> messages = [];
   String _messageBuffer = '';
 
   final TextEditingController textEditingController =
@@ -88,7 +88,6 @@ class _NewEntry extends State<NewEntry> {
       var str = _message.text.toString().trim();
       print(str);
     }).toList();
-
     return Scaffold(
       appBar: AppBar(
           title: (isConnecting
@@ -307,7 +306,7 @@ class _NewEntry extends State<NewEntry> {
     textEditingController.clear();
     if (text.length > 0) {
       try {
-        connection.output.add(utf8.encode(text + "\r\n"));
+        connection.output.add(utf8.encode(text));
         await connection.output.allSent;
 
         setState(() {

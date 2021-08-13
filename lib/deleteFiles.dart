@@ -7,8 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 List files = [];
-bool save = false;
-var fileData = "newFile";
 
 class DeleteFiles extends StatefulWidget {
   final BluetoothDevice server;
@@ -30,7 +28,6 @@ class _DeleteFiles extends State<DeleteFiles> {
   @override
   void initState() {
     super.initState();
-
     files = [];
     BluetoothConnection.toAddress(widget.server.address).then((_connection) {
       print('Connected to the device');
@@ -81,9 +78,6 @@ class _DeleteFiles extends State<DeleteFiles> {
               onPressed: () async {
                 if (isConnected) {
                   var x = i.split(".TXT");
-                  print(x);
-                  filename = x[0];
-                  fileData = x[0];
                   _sendMessage(x[0]);
                   await Future.delayed(Duration(seconds: 2));
                   setState(() {
@@ -184,30 +178,18 @@ class _DeleteFiles extends State<DeleteFiles> {
                 : _messageBuffer + dataString.substring(0, index))
             .contains("File started")) {
           EasyLoading.show(status: "Saving file");
-          save = true;
-        }
-        if (save) {
-          fileData = fileData.toString() +
-              "\n" +
-              (backspacesCounter > 0
-                      ? _messageBuffer.substring(
-                          0, _messageBuffer.length - backspacesCounter)
-                      : _messageBuffer + dataString.substring(0, index))
-                  .toString();
         }
         if ((backspacesCounter > 0
                 ? _messageBuffer.substring(
                     0, _messageBuffer.length - backspacesCounter)
                 : _messageBuffer + dataString.substring(0, index))
             .contains("File ended5")) {
-          save = false;
           setState(() {
             files = [];
           });
           _sendMessage("g");
           EasyLoading.dismiss();
         }
-
         _messageBuffer = dataString.substring(index);
       });
     } else {
@@ -223,7 +205,7 @@ class _DeleteFiles extends State<DeleteFiles> {
     textEditingController.clear();
     if (text.length > 0) {
       try {
-        connection.output.add(utf8.encode(text + "\r\n"));
+        connection.output.add(utf8.encode(text));
         await connection.output.allSent;
       } catch (e) {
         setState(() {});

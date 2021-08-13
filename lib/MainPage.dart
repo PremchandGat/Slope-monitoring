@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:slop_monitoring/Filemanagement.dart';
 import 'package:slop_monitoring/deleteFiles.dart';
+import 'package:slop_monitoring/downloadedFileGraph.dart';
 import 'package:slop_monitoring/newEntry.dart';
 import 'package:slop_monitoring/settings.dart';
 import 'graph.dart';
@@ -86,11 +87,13 @@ class _MainPage extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.home),
-        title: const Text('Slop Monitoring Sytem'),
+        title: const Text('Slope Monitoring Sytem'),
       ),
       body: ListView(
         children: <Widget>[
-          Divider(),
+          SizedBox(
+            height: 10,
+          ),
           Card(
             color: Colors.white38,
             child: ExpansionTile(
@@ -142,7 +145,6 @@ class _MainPage extends State<MainPage> {
                   child: ListTile(
                     title: const Text('Local adapter name'),
                     subtitle: Text(_name),
-                    onLongPress: null,
                   ),
                 ),
                 Card(
@@ -421,12 +423,50 @@ class _MainPage extends State<MainPage> {
                             print('Connect -> no device selected');
                           }
                         }),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CupertinoButton(
+                      color: Colors.cyan,
+                      child: Text("View Graph of downloaded file"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ShowGraph();
+                            },
+                          ),
+                        );
+                      },
+                    )
                   ],
                 )
               ],
             ),
           ),
           Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(children: [
+              Text(
+                "Team EIC",
+                style: TextStyle(color: Colors.black54),
+              ),
+              Text(
+                "Dr. Rahul Raj Choudhary",
+                style: TextStyle(color: Colors.black54),
+              ),
+              Text(
+                "Electronic Instrumentation and control Engineering",
+                style: TextStyle(color: Colors.black54),
+              ),
+              Text(
+                "Engineering College Bikaner, Raj. , India",
+                style: TextStyle(color: Colors.black54),
+              ),
+            ]),
+          )
         ],
       ),
     );
@@ -476,7 +516,7 @@ class _MainPage extends State<MainPage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return Settings(server: server);
+          return NewSettings(server: server);
         },
       ),
     );

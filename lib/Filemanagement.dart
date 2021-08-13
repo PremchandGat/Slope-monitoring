@@ -170,7 +170,7 @@ class _FileManagement extends State<FileManagement> {
                 ? _messageBuffer.substring(
                     0, _messageBuffer.length - backspacesCounter)
                 : _messageBuffer + dataString.substring(0, index))
-            .contains("TXT")) {
+            .contains(".TXT")) {
           setState(() {
             files.add(backspacesCounter > 0
                 ? _messageBuffer.substring(
@@ -224,7 +224,7 @@ class _FileManagement extends State<FileManagement> {
     textEditingController.clear();
     if (text.length > 0) {
       try {
-        connection.output.add(utf8.encode(text + "\r\n"));
+        connection.output.add(utf8.encode(text));
         await connection.output.allSent;
       } catch (e) {
         setState(() {});

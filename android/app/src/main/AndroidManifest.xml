@@ -2,8 +2,9 @@
     package="com.PremchandGat.slop_monitoring">
      <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
    <application
-        android:label="slop_monitoring"
+        android:label="slope_monitoring"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
