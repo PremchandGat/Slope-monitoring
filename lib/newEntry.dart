@@ -237,11 +237,13 @@ class _NewEntry extends State<NewEntry> {
                   await Future.delayed(const Duration(seconds: 2), () {});
                   _sendMessage(location.text);
                   await Future.delayed(const Duration(seconds: 2), () {});
-                  tare ? _sendMessage("a") : null;
-                  previous ? _sendMessage("b") : null;
-                  custom ? _sendMessage("c") : null;
+                  tare ? _sendMessage("a") : print("Don't send a");
+                  previous ? _sendMessage("b") : print("Don't send b");
+                  custom ? _sendMessage("c") : print("Don't send c");
                   await Future.delayed(const Duration(seconds: 2), () {});
-                  custom ? _sendMessage(customNumber.text) : null;
+                  custom
+                      ? _sendMessage(customNumber.text)
+                      : print("Don't send custom number");
                   EasyLoading.dismiss();
                 } else {
                   EasyLoading.showError("Device not connected");

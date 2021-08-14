@@ -16,7 +16,6 @@ class SelectBondedDevicePage extends StatefulWidget {
 }
 
 enum _DeviceAvailability {
-  no,
   maybe,
   yes,
 }
@@ -30,7 +29,7 @@ class _DeviceWithAvailability extends BluetoothDevice {
 }
 
 class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
-  List<_DeviceWithAvailability> devices = List<_DeviceWithAvailability>();
+  List<_DeviceWithAvailability> devices = [];
 
   // Availability
   StreamSubscription<BluetoothDiscoveryResult> _discoveryStreamSubscription;

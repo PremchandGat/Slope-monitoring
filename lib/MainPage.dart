@@ -98,7 +98,7 @@ class _MainPage extends State<MainPage> {
             color: Colors.white38,
             child: ExpansionTile(
               title: const Text(
-                'General',
+                'Bluetooth Settings',
                 style: TextStyle(fontSize: 30),
               ),
               children: [
@@ -218,7 +218,7 @@ class _MainPage extends State<MainPage> {
             color: Colors.white38,
             child: ExpansionTile(
               title: const Text(
-                'Devices discovery and connection',
+                'Main Menu',
                 style: TextStyle(fontSize: 30),
               ),
               children: [
@@ -256,7 +256,7 @@ class _MainPage extends State<MainPage> {
                     ),
                     CupertinoButton(
                         color: Colors.cyan,
-                        child: const Text('Explore discovered devices'),
+                        child: const Text('Explore Discovered Devices'),
                         onPressed: () async {
                           final BluetoothDevice selectedDevice =
                               await Navigator.of(context).push(
@@ -279,7 +279,7 @@ class _MainPage extends State<MainPage> {
                     ),
                     CupertinoButton(
                       color: Colors.cyan,
-                      child: const Text('Run Command'),
+                      child: const Text('Serial Terminal'),
                       onPressed: () async {
                         final BluetoothDevice selectedDevice =
                             await Navigator.of(context).push(
@@ -305,7 +305,7 @@ class _MainPage extends State<MainPage> {
                     ),
                     CupertinoButton(
                         color: Colors.cyan,
-                        child: const Text('Show Graph'),
+                        child: const Text('Real-Time Data'),
                         onPressed: () async {
                           final BluetoothDevice selectedDevice =
                               await Navigator.of(context).push(
@@ -428,7 +428,7 @@ class _MainPage extends State<MainPage> {
                     ),
                     CupertinoButton(
                       color: Colors.cyan,
-                      child: Text("View Graph of downloaded file"),
+                      child: Text("View Graph of Downloaded File"),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -454,7 +454,7 @@ class _MainPage extends State<MainPage> {
                 style: TextStyle(color: Colors.black54),
               ),
               Text(
-                "Dr. Rahul Raj Choudhary",
+                "Associate Professor Dr. Rahul Raj Choudhary",
                 style: TextStyle(color: Colors.black54),
               ),
               Text(
@@ -462,7 +462,19 @@ class _MainPage extends State<MainPage> {
                 style: TextStyle(color: Colors.black54),
               ),
               Text(
-                "Engineering College Bikaner, Raj. , India",
+                "Engineering College Bikaner, Rajasthan, India",
+                style: TextStyle(color: Colors.black54),
+              ),
+              Text(
+                "Project leader: rahulrajchoudhary9@gmail.com",
+                style: TextStyle(color: Colors.black54),
+              ),
+              Text(
+                "Hardware developer: pushpendrarajpurohit@gmail.com",
+                style: TextStyle(color: Colors.black54),
+              ),
+              Text(
+                "App developer: premchandg278@gmail.com",
                 style: TextStyle(color: Colors.black54),
               ),
             ]),
